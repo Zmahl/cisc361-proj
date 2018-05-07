@@ -46,3 +46,6 @@ private:
 	int demand;
 };
 
+int main(){
+
+}
