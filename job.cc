@@ -1,5 +1,5 @@
 #include "job.h"
-
+#include <iostream>
 using namespace std;
 
 Job::Job(int j, int m, int s,int p, int a, int r, int q, int d){
@@ -8,7 +8,6 @@ Job::Job(int j, int m, int s,int p, int a, int r, int q, int d){
 	priority = p;
 	arrtime = a;
 	runtime = r;
-	quantum = q;
 	demand = d;
 }
 int Job::get_jobnum(){
@@ -25,9 +24,6 @@ int Job::get_arrtime(){
 }
 int Job::get_runtime(){
 	return runtime;
-}
-int Job::get_quantum(){
-	return quantum;
 }
 int Job::get_demand(){
 	return demand;

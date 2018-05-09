@@ -6,7 +6,6 @@ private:
 	int priority;
 	int arrtime;
 	int runtime;
-	int quantum;
 	int demand;
 public:
 	Job(int j, int m, int s,int p, int a, int r, int q, int d);
@@ -15,6 +14,5 @@ public:
 	int get_priority();
 	int get_arrtime();
 	int get_runtime();
-	int get_quantum();
 	int get_demand();
 };

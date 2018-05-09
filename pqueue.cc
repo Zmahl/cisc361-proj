@@ -1,4 +1,5 @@
 #include <iostream>
+#include "job.h"
 
 using namespace std;
 
@@ -8,12 +9,12 @@ public:
   public:
     class Node{
     public:
-      char* data;
+      Job* job;
       Node* left;
       Node* right;
 
       //Ctor
-      Node(char* input, Node* l=NULL, Node* r=NULL){
+      Node(, Node* l=NULL, Node* r=NULL){
         data = input;
         left = l;
         right = r;
