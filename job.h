@@ -4,15 +4,15 @@ private:
 	int memory;
 	int serial;
 	int priority;
-	int arrtime;
 	int runtime;
-	int demand;
+	int devices;
+	int location;
 public:
-	Job(int j, int m, int s,int p, int a, int r, int q, int d);
+	Job(int j, int m, int s,int p, int a, int r, int q, int d, int l);
 	int get_jobnum();
 	int get_memory();
 	int get_priority();
-	int get_arrtime();
 	int get_runtime();
-	int get_demand();
+	int get_devices();
+	int get_location();
 };

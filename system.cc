@@ -1,23 +1,26 @@
+#include "system.h"
 #include <iostream>
-#include <fstream>
-#include <stdlib.h>
-#include <string>
 using namespace std;
 
-int main(){
-	string x;
-	ifstream inFile;
-
-	inFile.open("test.txt");
-	if (!inFile){
-		cout << "Unable to open file";
-		exit(1);
-	}
-
-	while ( getline(inFile, x) ){
-		cout << x << '\n';
-		cout << x[0] << '\n';
-	}
-
-	inFile.close();
+System::System(int tm, int am, int td, int ad, int q){
+	total_mem = tm;
+	avail_mem = am;
+	total_devs = td;
+	avail_devs = am;
+	quantum = q;
+}
+int System::get_total_mem(){
+	return total_mem;
+}
+int System::get_avail_mem(){
+	return avail_mem;
+}
+int System::get_total_devs(){
+	return total_devs;
+}
+int System::get_avail_devs(){
+	return avail_devs;
+}
+int System::get_quantum(){
+	return quantum;
 }
