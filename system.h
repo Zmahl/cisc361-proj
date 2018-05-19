@@ -9,13 +9,6 @@ private:
 	int total_devs;
 	int avail_devs;
 	int quantum;
-
-	std::list<Job*> *hq1;
-	std::list<Job*> *hq2;
-	std::list<Process*> *rq;
-	std::list<Process*> *wq;
-	std::list<Process*> *cpu;
-	std::list<Process*> *cq;
 public:
 	System(int tm, int td, int q, int t);
 	int get_total_mem();
@@ -28,5 +21,17 @@ public:
 	void take_avail_mem(int m);
 	void add_avail_devs(int d);
 	void take_avail_devs(int d);
-	void add_time(int t);
+	void set_time(int t);
+	void add_hq1(Job* job);
+	void add_hq2(Job* job);
+	void add_rq(Process* pro);
+	void add_wq(Process* pro);
+	void add_cq(Process* pro);
+
+	std::list<Job*> *hq1;
+	std::list<Job*> *hq2;
+	std::list<Process*> *rq;
+	std::list<Process*> *wq;
+	std::list<Process*> *cpu;
+	std::list<Process*> *cq;
 };

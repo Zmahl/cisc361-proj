@@ -32,3 +32,6 @@ int Job::get_devices(){
 int Job::get_location(){
 	return location;
 }
+void Job::set_location(int l){
+	this->location = l;
+}

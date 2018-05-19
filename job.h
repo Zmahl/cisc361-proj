@@ -16,4 +16,5 @@ public:
 	int get_runtime();
 	int get_devices();
 	int get_location();
+	void set_location(int l);
 };

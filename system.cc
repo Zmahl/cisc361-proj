@@ -48,8 +48,8 @@ void System::add_avail_devs(int d){
 void System::take_avail_devs(int d){
 	this->avail_devs = this->avail_devs - d;
 }
-void System::add_time(int t){
-	this->time = this->time + t;
+void System::set_time(int t){
+	this->time = t;
 }
 
 bool hq1_sort(Job* j1, Job* j2){
@@ -63,4 +63,22 @@ bool hq1_sort(Job* j1, Job* j2){
 
 bool hq2_sort(Job* j1, Job* j2){
 	return j1->get_arrtime() < j2->get_arrtime();
+}
+
+void System::add_hq1(Job* job){
+	this->hq1->push_back(job);
+	this->hq1->sort(hq1_sort);
+}
+void System::add_hq2(Job* job){
+	this->hq2->push_back(job);
+	this->hq2->sort(hq2_sort);
+}
+void System::add_rq(Process* pro){
+	this->rq->push_back(pro);
+}
+void System::add_wq(Process* pro){
+	this->wq->push_back(pro);
+}
+void System::add_cq(Process* pro){
+	this->cq->push_back(pro);
 }
