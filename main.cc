@@ -2,7 +2,9 @@
 #include <iostream>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
+#include <vector>
 #include <stdlib.h>
 
 using namespace std;
@@ -27,6 +29,36 @@ int main(){
 System* make_system(string line){
 	cout << line << endl;
 
-	System* system = new System(100, 10, 2, 1);
+	vector<string> array;
+	std::size_t pos = 0, found;
+	while((found = line.find_first_of(' ', pos)) != std::string::npos){
+		array.push_back(line.substr(pos, found-pos));
+		pos = found+1;
+	}
+	array.push_back(line.substr(pos));
+
+	vector<string>:: iterator i;
+	int y = 0;
+	int time;
+	int mem;
+	int devs;
+	int q;
+	for(i = array.begin(); i!=array.end(); ++i){
+		if (y == 1){
+			time = (*i)[0];
+		}else if (y == 2){
+			istringstream buffer((*i).substr(2));
+			buffer >> mem;
+		}else if (y ==3){
+			istringstream buffer((*i).substr(2));
+			buffer >> devs;
+		}else if (y == 4){
+			istringstream buffer((*i).substr(2));
+			buffer >> q;
+		}
+		y++;
+	}
+
+	System* system = new System(mem, devs, q, time);
 	return system;
 }

@@ -7,7 +7,7 @@ System::System(int tm, int td, int q, int t){
 	this->total_mem = tm;
 	this->avail_mem = tm;
 	this->total_devs = td;
-	this->avail_devs = tm;
+	this->avail_devs = td;
 	this->quantum = q;
 	this->time = t;
 
