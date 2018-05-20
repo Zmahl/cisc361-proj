@@ -27,6 +27,7 @@ public:
 	void add_rq(Process* pro);
 	void add_wq(Process* pro);
 	void add_cq(Process* pro);
+	bool bankers(Process* pro, int devs);
 
 	std::list<Job*> *hq1;
 	std::list<Job*> *hq2;

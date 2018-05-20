@@ -21,23 +21,20 @@ int main(){
 	if (my_file.is_open()){
 		getline(my_file, line);
 		system = make_system(line);
-
-		while(getline(my_file, line)){
+		while(true){
+			getline(my_file, line);
 			if (line[0] == 'A'){
 				Job* new_job = make_job(line);
-				if (new_job->get_memory() < system->get_total_mem()){
+				if (new_job->get_memory() < system->get_total_mem() || new_job->get_devices() < system->get_total_devs()){
 					system->set_time(new_job->get_arrtime());
 					if (new_job->get_memory() < system->get_avail_mem()){
-						new_job->set_location(3);
 						Process* new_process = new Process(new_job);
-						new_process->add_alloc_devs(2);
+						system->take_avail_mem(new_process->get_job()->get_mem());
 						system->add_rq(new_process);
 					}else{
 						if (new_job->get_priority() == 1){
-							new_job->set_location(1);
 							system->add_hq1(new_job);
 						}else if (new_job->get_priority() == 2){
-							new_job->set_location(2);
 							system->add_hq2(new_job);
 						}
 					}
@@ -45,8 +42,80 @@ int main(){
 					cout << "Not enough system memory." << endl;
 				}
 			}else if (line[0] == 'Q'){
-				
+				vector<string> array;
+				std::size_t pos = 0, found;
+				while((found = line.find_first_of(' ', pos)) != std::string::npos){
+					array.push_back(line.substr(pos, found-pos));
+					pos = found+1;
+				}
+				array.push_back(line.substr(pos));
+
+				vector<string>:: iterator i;
+				int y = 0;
+				int arrtime;
+				int job_num;
+				int devs;
+				for(i = array.begin(); i!=array.end(); ++i){
+					if (y == 1){
+						istringstream buffer(*i);
+						buffer >> arrtime;
+					}else if (y == 2){
+						istringstream buffer((*i).substr(2));
+						buffer >> job_num;
+					}else if (y ==3){
+						istringstream buffer((*i).substr(2));
+						buffer >> devs;
+					}
+					y++;
+				}
+				list<Process*>:: iterator j = system->cpu->begin();
+				if (job_num == (*j)->get_job()->get_jobnum()){
+					system->set_time(arrtime);
+					if (system->bankers((*j), devs)){
+						(*j)->add_alloc_devs(devs);
+						system->take_avail_devs(devs);
+						system->rq->push_back(system->cpu->front());
+						system->cpu->pop_front();
+					}else{
+						(*j)->add_req_devs(devs);
+						system->wq->push_back(system->cpu->front());
+						system->cpu->pop_front();
+					}
+				}
+			}else if(line[0] == 'L'){
+				vector<string> array;
+				std::size_t pos = 0, found;
+				while((found = line.find_first_of(' ', pos)) != std::string::npos){
+					array.push_back(line.substr(pos, found-pos));
+					pos = found+1;
+				}
+				array.push_back(line.substr(pos));
+
+				vector<string>:: iterator i;
+				int y = 0;
+				int arrtime;
+				int job_num;
+				int devs;
+				for(i = array.begin(); i!=array.end(); ++i){
+					if (y == 1){
+						istringstream buffer(*i);
+						buffer >> arrtime;
+					}else if (y == 2){
+						istringstream buffer((*i).substr(2));
+						buffer >> job_num;
+					}else if (y ==3){
+						istringstream buffer((*i).substr(2));
+						buffer >> devs;
+					}
+					y++;
+				}
+				list<Process*>:: iterator j = system->cpu->begin();
+				if (job_num == (*j)->get_job()->get_jobnum()){
+					system->set_time(arrtime);
+					system->add_avail_devs(devs);
+				}
 			}
+
 		}
 	}
 	else{
@@ -135,7 +204,7 @@ Job* make_job(string line){
 		y++;
 	}
 
-	Job* job = new Job(jobnum, mem, priority, arrtime, runtime, devs, 0);
+	Job* job = new Job(jobnum, mem, priority, arrtime, runtime, devs);
 	return job;
 }
 

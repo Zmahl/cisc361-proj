@@ -49,7 +49,7 @@ void System::take_avail_devs(int d){
 	this->avail_devs = this->avail_devs - d;
 }
 void System::set_time(int t){
-	this->time = t;
+	int elapsed = t - this->get_time();
 }
 
 bool hq1_sort(Job* j1, Job* j2){
@@ -81,4 +81,34 @@ void System::add_wq(Process* pro){
 }
 void System::add_cq(Process* pro){
 	this->cq->push_back(pro);
+}
+
+bool System::bankers(Process* pro, int devs){
+	int bavail_devs = this->get_avail_devs();
+
+	bavail_devs -= devs;
+	int favail_devs = bavail_devs;
+
+	while(bavail_devs != favail_devs){
+		bavail_devs = favail_devs;
+
+		list<Process*>:: iterator i;
+		for (i = this->rq->begin(); i != this->rq->end(); ++i){
+			int needed_devs = (*i)->get_job()->get_devices() - (*i)->get_alloc_devs();
+			if(needed_devs < favail_devs){
+				(*i)->set_req_met(true);
+				favail_devs += (*i)->get_alloc_devs();
+			}
+		}
+	}
+
+	bool ret = true;
+
+	list<Process*>:: iterator it;
+	for (it = this->rq->begin(); it != this->rq->end(); ++it){
+		ret = ret && (*it)->get_req_met();
+		(*it)->set_req_met(false);
+	}
+
+	return ret;
 }

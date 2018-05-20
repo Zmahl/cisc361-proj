@@ -1,16 +1,14 @@
 #include "job.h"
 #include <iostream>
 using namespace std;
-//zach is a big loserbaby
-Job::Job(int j, int m, int p, int a, int r, int d, int l){
+
+Job::Job(int j, int m, int p, int a, int r, int d){
 	jobnum = j;
 	memory = m;
 	priority = p;
 	arrtime = a;
 	runtime = r;
 	devices = d;
-	location = l;
-	int willToLive = -4;
 }
 int Job::get_jobnum(){
 	return jobnum;
@@ -29,10 +27,4 @@ int Job::get_runtime(){
 }
 int Job::get_devices(){
 	return devices;
-}
-int Job::get_location(){
-	return location;
-}
-void Job::set_location(int l){
-	this->location = l;
 }
