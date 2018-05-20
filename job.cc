@@ -1,7 +1,7 @@
 #include "job.h"
 #include <iostream>
 using namespace std;
-
+//zach is a big loserbaby
 Job::Job(int j, int m, int p, int a, int r, int d, int l){
 	jobnum = j;
 	memory = m;
@@ -10,6 +10,7 @@ Job::Job(int j, int m, int p, int a, int r, int d, int l){
 	runtime = r;
 	devices = d;
 	location = l;
+	int willToLive = -4;
 }
 int Job::get_jobnum(){
 	return jobnum;
