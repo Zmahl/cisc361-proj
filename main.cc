@@ -25,21 +25,8 @@ int main(){
 			getline(my_file, line);
 			if (line[0] == 'A'){
 				Job* new_job = make_job(line);
-				if (new_job->get_memory() < system->get_total_mem() || new_job->get_devices() < system->get_total_devs()){
-					system->set_time(new_job->get_arrtime());
-					if (new_job->get_memory() < system->get_avail_mem()){
-						Process* new_process = new Process(new_job);
-						system->take_avail_mem(new_process->get_job()->get_mem());
-						system->add_rq(new_process);
-					}else{
-						if (new_job->get_priority() == 1){
-							system->add_hq1(new_job);
-						}else if (new_job->get_priority() == 2){
-							system->add_hq2(new_job);
-						}
-					}
-				}else{
-					cout << "Not enough system memory." << endl;
+				if (new_job->get_memory() < system->get_total_mem() && new_job->get_devices() < system->get_total_devs()){
+					system->add_sq(new_job);
 				}
 			}else if (line[0] == 'Q'){
 				vector<string> array;
@@ -69,8 +56,8 @@ int main(){
 					y++;
 				}
 				list<Process*>:: iterator j = system->cpu->begin();
+				system->set_time(arrtime);
 				if (job_num == (*j)->get_job()->get_jobnum()){
-					system->set_time(arrtime);
 					if (system->bankers((*j), devs)){
 						(*j)->add_alloc_devs(devs);
 						system->take_avail_devs(devs);
@@ -81,6 +68,7 @@ int main(){
 						system->wq->push_back(system->cpu->front());
 						system->cpu->pop_front();
 					}
+					system->advance();
 				}
 			}else if(line[0] == 'L'){
 				vector<string> array;
@@ -117,8 +105,7 @@ int main(){
 			}
 
 		}
-	}
-	else{
+	}else{
 		cout << "no file" << endl;
 	}
 }

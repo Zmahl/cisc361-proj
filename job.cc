@@ -8,6 +8,7 @@ Job::Job(int j, int m, int p, int a, int r, int d){
 	priority = p;
 	arrtime = a;
 	runtime = r;
+	rantime = 0;
 	devices = d;
 }
 int Job::get_jobnum(){
@@ -27,4 +28,10 @@ int Job::get_runtime(){
 }
 int Job::get_devices(){
 	return devices;
+}
+int Job::get_rantime(){
+	return rantime;
+}
+void Job::set_rantime(int r){
+	this->rantime = r;
 }

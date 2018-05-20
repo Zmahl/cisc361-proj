@@ -22,13 +22,16 @@ public:
 	void add_avail_devs(int d);
 	void take_avail_devs(int d);
 	void set_time(int t);
+	void add_sq(Job* job);
 	void add_hq1(Job* job);
 	void add_hq2(Job* job);
 	void add_rq(Process* pro);
 	void add_wq(Process* pro);
 	void add_cq(Process* pro);
 	bool bankers(Process* pro, int devs);
+	int advance();
 
+	std::list<Job*> *sq;
 	std::list<Job*> *hq1;
 	std::list<Job*> *hq2;
 	std::list<Process*> *rq;

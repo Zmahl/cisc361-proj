@@ -11,6 +11,7 @@ System::System(int tm, int td, int q, int t){
 	this->quantum = q;
 	this->time = t;
 
+	this->sq = new std::list<Job*>();
 	this->hq1 = new std::list<Job*>();
 	this->hq2 = new std::list<Job*>();
 	this->rq = new std::list<Process*>();
@@ -49,7 +50,91 @@ void System::take_avail_devs(int d){
 	this->avail_devs = this->avail_devs - d;
 }
 void System::set_time(int t){
-	int elapsed = t - this->get_time();
+	int elapsed = t - this->time;
+	int adv_time;
+
+	if (elapsed < this->quantum){
+		this->time = t;
+	}else if (elapsed == this->quantum){
+		adv_time = advance();
+		this->time += adv_time;
+	}else{
+		while (elapsed > 0){
+			adv_time = advance();
+			elapsed -= adv_time;
+		}
+		this->time = elapsed;
+	}
+}
+
+int System::advance(){
+	int ret;
+	bool released;
+	if (!(this->cpu->empty())){
+		list<Process*>:: iterator j = this->cpu->begin();
+		int time_left = (*j)->get_job()->get_runtime()- (*j)->get_job()->get_rantime();
+		if (time_left <= this->quantum){
+			ret = time_left;
+			(*j)->get_job()->set_rantime((*j)->get_job()->get_runtime());
+			this->add_avail_mem((*j)->get_job()->get_memory());
+			this->add_avail_devs((*j)->get_job()->get_devices());
+			this->cq->push_back(this->cpu->front());
+			this->cpu->pop_front();
+			released = true;
+		}else{
+			(*j)->get_job()->set_rantime((*j)->get_job()->get_rantime() + this->quantum);
+			this->rq->push_back(this->cpu->front());
+			this->cpu->pop_front();
+		}
+	}
+	if (!(this->sq->empty())){
+		list<Job*>:: iterator s;
+		cout << "INSIDE IF" << endl;
+		for (s = this->sq->begin(); s != this->sq->end(); ++s){
+			cout << (*s) << endl;
+			cout << "IN THE FOR LOOP" << endl;
+			if ((*s)->get_priority() == 1){
+				cout << "IF beginning" << endl;
+				this->add_hq1(this->sq->front());
+				this->sq->pop_front();
+				cout << "IF end" << endl;
+			}else if ((*s)->get_priority() == 2){
+				cout << "ELSE IF beginning" << endl;
+				this->add_hq2(this->sq->front());
+				this->sq->pop_front();
+				cout << "ELSE OF end" << endl;
+			}
+		}
+	}
+	if (released){
+		if (!(this->wq->empty())){
+			list<Process*>:: iterator w = this->wq->begin();
+			if (bankers((*w), (*w)->get_req_devs()))
+				this->rq->push_back(this->wq->front());
+				this->wq->pop_front();
+		}if (!(this->hq1->empty())){
+			list<Job*>:: iterator h;
+			for(h = this->hq1->begin(); h != this->hq1->end(); ++h){
+				if ((*h)->get_memory() <= this->get_avail_mem() && (*h)->get_devices() <= this->get_total_devs()){
+					Process* new_process = new Process(*h);
+					this->take_avail_mem(new_process->get_job()->get_memory());
+					this->add_rq(new_process);
+				}
+			}
+		}if (!(this->hq2->empty())){
+			list<Job*>:: iterator h2;
+			for(h2 = this->hq2->begin(); h2 != this->hq2->end(); ++h2){
+				if ((*h2)->get_memory() <= this->get_avail_mem() && (*h2)->get_devices() <= this->get_total_devs()){
+					Process* new_process = new Process(*h2);
+					this->take_avail_mem(new_process->get_job()->get_memory());
+					this->add_rq(new_process);
+				}
+			}
+		}
+	}
+
+
+	return ret;
 }
 
 bool hq1_sort(Job* j1, Job* j2){
@@ -65,6 +150,9 @@ bool hq2_sort(Job* j1, Job* j2){
 	return j1->get_arrtime() < j2->get_arrtime();
 }
 
+void System::add_sq(Job* job){
+	this->sq->push_back(job);
+}
 void System::add_hq1(Job* job){
 	this->hq1->push_back(job);
 	this->hq1->sort(hq1_sort);
@@ -112,3 +200,5 @@ bool System::bankers(Process* pro, int devs){
 
 	return ret;
 }
+
+
